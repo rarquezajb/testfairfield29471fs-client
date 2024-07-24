@@ -1,13 +1,21 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 
-export default function Home() {
+async function getServerIp() {
+  //const response = await fetch("http://localhost:3000/api/ip4");
+  const response = await fetch("https://testfairfield29471fs-server.vercel.app/api/ip4");
+  const data = await response.json();
+  return data.serverIp;
+}
+
+export default async function Home() {
+  const serverIp = await getServerIp();
   return (
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
+          This client made an api call to a vercel server at &nbsp;
+          <code className={styles.code}>{serverIp}</code>
         </p>
         <div>
           <a
