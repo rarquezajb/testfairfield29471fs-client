@@ -1,5 +1,26 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import os from 'os';
+
+async function getLocalIp() {
+  // Retrieve the server's IP address
+  const networkInterfaces = os.networkInterfaces();
+  let serverIp = '127.0.0.1'; // Default to localhost
+
+  for (const interfaceName in networkInterfaces) {
+    const addresses = networkInterfaces[interfaceName];
+    if (addresses) {
+      for (const address of addresses) {
+        if (address.family === 'IPv4' && !address.internal) {
+          serverIp = address.address;
+          break;
+        }
+      }
+    }
+  }
+
+  return serverIp;
+}
 
 async function getServerIp() {
   //const response = await fetch("http://localhost:3000/api/ip4");
@@ -10,12 +31,17 @@ async function getServerIp() {
 
 export default async function Home() {
   const serverIp = await getServerIp();
+  const localIp = await getLocalIp();
   return (
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          This client made an api call to a vercel server at &nbsp;
+          This client made an api call to a vercel server at ip:&nbsp;
           <code className={styles.code}>{serverIp}</code>
+        </p>
+        <p>
+          This client is running in vercel at ip: &nbsp;
+          <code className={styles.code}>{localIp}</code>
         </p>
         <div>
           <a
